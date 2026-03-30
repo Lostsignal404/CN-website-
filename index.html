@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celestial Network</title>
+  <style>
+    :root {
+      --bg: #090d18;
+      --bg2: #111827;
+      --sidebar: rgba(10, 15, 28, 0.82);
+      --card: rgba(255,255,255,0.08);
+      --card-2: rgba(255,255,255,0.05);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.72);
+      --accent: #ff5b2e;
+      --accent2: #ff8a3d;
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 16px 48px rgba(255, 91, 46, 0.18);
+      --success: #22c55e;
+      --warn: #facc15;
+      --danger: #ef4444;
+      --offline: #94a3b8;
+      --glow: 0 0 18px rgba(255, 91, 46, 0.28);
+    }
+
+    body.light {
+      --bg: #edf2ff;
+      --bg2: #dce6ff;
+      --sidebar: rgba(255,255,255,0.92);
+      --card: rgba(255,255,255,0.9);
+      --card-2: rgba(255,255,255,0.7);
+      --text: #111827;
+      --muted: rgba(17,24,39,0.72);
+      --accent: #ff5b2e;
+      --accent2: #ff8a3d;
+      --border: rgba(17,24,39,0.08);
+      --shadow: 0 16px 48px rgba(255, 91, 46, 0.14);
+      --glow: 0 0 18px rgba(255, 91, 46, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,91,46,0.18), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(255,138,61,0.14), transparent 22%),
+        linear-gradient(135deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 18px;
+      background: var(--sidebar);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-logo {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+    }
+
+    .logo-text {
+      font-size: 1.12rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .sidebar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-title {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+
+    .nav-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--card-2);
+      border: 1px solid transparent;
+      transition: 0.18s ease;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover {
+      transform: translateX(4px);
+      border-color: var(--border);
+      background: var(--card);
+    }
+
+    .sidebar-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button, .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      font-family: inherit;
+    }
+
+    button:hover, .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      text-decoration: none;
+      box-shadow: var(--shadow);
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .main {
+      padding: 28px;
+    }
+
+    .top-banner {
+      position: relative;
+      overflow: hidden;
+      border-radius: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(120deg, rgba(255,91,46,0.18), rgba(255,138,61,0.08)),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+        var(--card);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      animation: fadeUp 0.7s ease;
+    }
+
+    .top-banner::before {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(255,91,46,0.18);
+      filter: blur(70px);
+      right: -70px;
+      top: -90px;
+      pointer-events: none;
+    }
+
+    .top-banner::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(255,138,61,0.12);
+      filter: blur(70px);
+      left: -80px;
+      bottom: -100px;
+      pointer-events: none;
+    }
+
+    .banner-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.3rem, 5vw, 4.3rem);
+      line-height: 1.02;
+    }
+
+    .hero-text {
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 62ch;
+      font-size: 1.03rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .hero-logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-logo {
+      width: 100%;
+      max-width: 520px;
+      display: block;
+      filter: drop-shadow(0 18px 40px rgba(0,0,0,0.45));
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .quick-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,91,46,0.12);
+      border: 1px solid rgba(255,91,46,0.24);
+      font-weight: 800;
+      font-size: 0.92rem;
+      box-shadow: var(--glow);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .hero-stat {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .hero-stat-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .hero-stat-value {
+      font-size: 1.85rem;
+      font-weight: 900;
+      transition: color 0.25s ease, transform 0.2s ease;
+    }
+
+    .hero-stat-value.bump {
+      transform: scale(1.06);
+      color: var(--accent2);
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      padding: 24px;
+      animation: fadeUp 0.7s ease;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .mini-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      transition: 0.18s ease;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .mini-title {
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .mini-text {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.95rem;
+    }
+
+    .join-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .join-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      transition: 0.18s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .join-box::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 140px;
+      height: 140px;
+      background: rgba(255,91,46,0.12);
+      border-radius: 50%;
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    .join-box:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .join-label {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .join-value {
+      font-size: 1.45rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .join-subtext {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+    }
+
+    .members {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+    }
+
+    .member {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      transition: 0.18s ease, opacity 0.2s ease;
+    }
+
+    .member img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.08);
+    }
+
+    .member-name {
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .status-row, .activity-line {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px currentColor;
+      flex-shrink: 0;
+    }
+
+    .online { color: var(--success); background: var(--success); }
+    .idle { color: var(--warn); background: var(--warn); }
+    .dnd { color: var(--danger); background: var(--danger); }
+    .offline { color: var(--offline); background: var(--offline); }
+
+    .voice-list, .activity-list, .faq-list, .staff-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .row-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .row-title {
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .pill-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,91,46,0.15);
+      border: 1px solid rgba(255,91,46,0.25);
+      font-size: 0.92rem;
+    }
+
+    .pill img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+    }
+
+    .rules-list {
+      display: grid;
+      gap: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .staff-owner-card {
+      text-align: center;
+      background: var(--card-2);
+      border-radius: 22px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      transition: 0.18s ease;
+    }
+
+    .staff-owner-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .staff-owner-card img {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 14px;
+      border: 3px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+    }
+
+    .staff-role {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-answer {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+
+    .empty {
+      color: var(--muted);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 28px;
+      padding-bottom: 18px;
+      font-size: 0.9rem;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(20px);
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(17,24,39,0.95);
+      color: white;
+      font-size: 0.95rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      z-index: 120;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes memberIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .banner-grid,
+      .section-grid,
+      .cards-3,
+      .join-grid,
+      .staff-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main { padding: 18px; }
+      .top-banner, .panel, .sidebar-card { border-radius: 22px; }
+      .members { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <!-- Save your new sidebar icon as sidebar-icon.svg -->
+        <img src="sidebar-icon.svg" alt="Celestial Network Icon" class="sidebar-logo">
+        <div class="logo-text">Celestial Network</div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Navigation</div>
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#join-info">Join</a>
+          <a href="#features">Why Join</a>
+          <a href="#before-joining">Before Joining</a>
+          <a href="#vote-progress">Vote Progress</a>
+          <a href="#voice">Voice Channels</a>
+          <a href="#members">Members</a>
+          <a href="#staff">Staff</a>
+          <a href="#rules">Rules</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Quick Actions</div>
+        <div class="sidebar-buttons">
+          <a id="joinBtnSide" class="btn btn-primary" href="#" target="_blank">Join Discord</a>
+          <button class="btn btn-secondary" id="copyInviteBtn">Copy Invite</button>
+          <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
+          <button class="btn btn-secondary" id="themeToggle">Toggle Theme</button>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Live Status</div>
+        <div id="sidebarStatus" class="empty">Loading widget data...</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- HERO -->
+      <section class="top-banner" id="home">
+        <div class="banner-grid">
+          <div>
+            <div class="eyebrow">Minecraft Realm & Community Hub</div>
+            <h1 id="serverName">Celestial Network</h1>
+            <div class="hero-text">
+              Welcome to Celestial Network — a growing Minecraft community with custom features,
+              chill players, active staff, realm updates, and a Discord-powered hub for everything.
+            </div>
+
+            <div class="hero-actions">
+              <a id="joinBtnHero" class="btn btn-primary" href="#" target="_blank">Join the Community</a>
+              <a class="btn btn-secondary" href="https://escalmc.com/realms/S7wxR61oZ7SqD1KiuDfp/" target="_blank">Vote Here</a>
+            </div>
+
+            <div class="quick-badges">
+              <div class="badge">🌌 Realm Released</div>
+              <div class="badge">📱 All Devices Allowed</div>
+              <div class="badge">🤖 AI Chat</div>
+              <div class="badge">⚔️ Amazing Kits</div>
+            </div>
+
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-label">Online Now</div>
+                <div class="hero-stat-value" id="onlineCount">0</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-label">Visible Members</div>
+                <div class="hero-stat-value" id="visibleCount">0</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-label">Voice Channels</div>
+                <div class="hero-stat-value" id="voiceCount">0</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-label">Auto Refresh</div>
+                <div class="hero-stat-value">15s</div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;color:var(--muted);" id="lastUpdated">Last updated: --</div>
+          </div>
+
+          <div class="hero-logo-wrap">
+            <!-- Save your wide logo as logo-wide.svg -->
+            <img src="logo-wide.svg" alt="Celestial Network Logo" class="hero-logo">
+          </div>
+        </div>
+      </section>
+
+      <!-- JOIN INFO -->
+      <section class="panel" id="join-info">
+        <div class="section-title">🎮 Join Celestial Network</div>
+
+        <div class="join-grid">
+          <div class="join-box">
+            <div class="join-label">🌌 Realm Access</div>
+            <div class="join-value" id="realmAccess">Available Through Discord</div>
+            <div class="join-subtext">Join the Discord server to get access details and community updates.</div>
+            <button class="btn btn-secondary" id="copyRealmBtn">Copy Access Text</button>
+          </div>
+
+          <div class="join-box">
+            <div class="join-label">📱 Supported Devices</div>
+            <div class="join-value">All Devices Allowed</div>
+            <div class="join-subtext">Play from supported Minecraft Bedrock devices and stay connected with the community.</div>
+          </div>
+
+          <div class="join-box">
+            <div class="join-label">🚀 Quick Join</div>
+            <div class="join-value">Discord Invite</div>
+            <div class="join-subtext">The fastest way to join Celestial, receive updates, and access the realm.</div>
+            <a id="joinBtnRealm" class="btn btn-primary" href="#" target="_blank">Join Discord</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY JOIN -->
+      <section class="panel" id="features">
+        <div class="section-title">✨ Why Join Celestial Network?</div>
+
+        <div class="cards-3">
+          <div class="mini-card">
+            <div class="mini-title">🖥️ Amazing Mods</div>
+            <div class="mini-text">Enjoy custom features and improved gameplay across the Celestial experience.</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-title">🤖 AI Chat</div>
+            <div class="mini-text">Talk, hang out, and explore smart chat features inside the community.</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-title">✨ Active Staff</div>
+            <div class="mini-text">Helpful staff are around to support the server and keep things running smoothly.</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-title">⚔️ Amazing Kits</div>
+            <div class="mini-text">Unlock fun kits and tools to help you start and progress faster.</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-title">🛒 Great Market</div>
+            <div class="mini-text">Trade, buy, and build your own path with the in-game economy and market.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="before-joining">
+        <div class="section-title">🧭 Before Joining</div>
+        <div class="section-grid">
+          <div class="row-card">
+            <div class="row-title">What to expect</div>
+            <div class="mini-text">Friendly community, regular events, and a safe beginner-friendly space with staff support.</div>
+          </div>
+          <div class="row-card">
+            <div class="row-title">What you need</div>
+            <div class="mini-text">Minecraft Bedrock, a Discord account, and a willingness to play fair and join community chat.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="vote-progress">
+        <div class="section-title">📊 Vote Progress</div>
+        <div class="row-card">
+          <div class="row-title">Realm Vote Goal</div>
+          <div class="pill-wrap" style="margin-bottom: 12px;">
+            <div class="pill">Current: <strong id="voteCurrent">24</strong></div>
+            <div class="pill">Target: <strong id="voteTarget">50</strong></div>
+          </div>
+          <div style="margin-top: 16px; background: rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; height: 16px;">
+            <div id="voteProgressBar" style="width: 48%; height:100%; background: linear-gradient(135deg, var(--accent), var(--accent2));"></div>
+          </div>
+          <div class="mini-text" style="margin-top: 12px;">Help the server reach the next milestone by voting every day.</div>
+        </div>
+      </section>
+
+      <section class="panel" id="voice">
+        <div class="section-title">🎙️ Voice Channels</div>
+        <div class="voice-list">
+          <div class="row-card">
+            <div class="row-title">General Chat</div>
+            <div class="mini-text">A place for casual talk, memes, and community meetups.</div>
+          </div>
+          <div class="row-card">
+            <div class="row-title">Events</div>
+            <div class="mini-text">Join for nightly builds, PvP tournaments, and weekly community streams.</div>
+          </div>
+          <div class="row-card">
+            <div class="row-title">Staff Help</div>
+            <div class="mini-text">A dedicated staff channel for game support and questions.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="members">
+        <div class="section-title">👥 Active Members</div>
+        <div class="members" id="memberList">
+          <div class="member">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80" alt="Member avatar">
+            <div>
+              <div class="member-name">Nova</div>
+              <div class="status-row"><span class="dot online"></span> Online</div>
+            </div>
+          </div>
+          <div class="member">
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80" alt="Member avatar">
+            <div>
+              <div class="member-name">Echo</div>
+              <div class="status-row"><span class="dot idle"></span> Idle</div>
+            </div>
+          </div>
+          <div class="member">
+            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=80&q=80" alt="Member avatar">
+            <div>
+              <div class="member-name">Sky</div>
+              <div class="status-row"><span class="dot dnd"></span> Busy</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="staff">
+        <div class="section-title">🛡️ Server Staff</div>
+        <div class="staff-grid">
+          <div class="staff-owner-card">
+            <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=160&q=80" alt="Staff">
+            <div class="member-name">Luna</div>
+            <div class="staff-role">Owner</div>
+          </div>
+          <div class="staff-owner-card">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80" alt="Staff">
+            <div class="member-name">Riven</div>
+            <div class="staff-role">Head Moderator</div>
+          </div>
+          <div class="staff-owner-card">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80" alt="Staff">
+            <div class="member-name">Astra</div>
+            <div class="staff-role">Community Manager</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="rules">
+        <div class="section-title">📜 Community Rules</div>
+        <div class="rules-list">
+          <div>1. Be respectful to everyone.</div>
+          <div>2. No griefing or stealing in the realm.</div>
+          <div>3. Keep chat friendly and avoid harassment.</div>
+          <div>4. Use voice channels responsibly.</div>
+          <div>5. Follow staff directions and Discord guidelines.</div>
+        </div>
+      </section>
+
+      <section class="panel" id="faq">
+        <div class="section-title">❓ FAQ</div>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>How do I join the Discord?</summary>
+            <div class="faq-answer">Click any “Join Discord” button or copy the invite to join instantly.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Is the realm open on all platforms?</summary>
+            <div class="faq-answer">Yes, Celestial Network supports all Minecraft Bedrock devices.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Where can I vote for the server?</summary>
+            <div class="faq-answer">Use the Vote Here button in the hero section to cast your vote.</div>
+          </details>
+        </div>
+      </section>
+
+      <div class="footer">Built for Celestial Network — ready to launch.</div>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script>
+    const discordInviteUrl = 'https://discord.gg/your-invite-code';
+    const realmCopyText = 'Join Celestial Network on Discord to get realm access and updates!';
+    const inviteButtons = [
+      document.getElementById('joinBtnHero'),
+      document.getElementById('joinBtnSide'),
+      document.getElementById('joinBtnRealm'),
+    ];
+    const copyInviteBtn = document.getElementById('copyInviteBtn');
+    const copyRealmBtn = document.getElementById('copyRealmBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const toast = document.getElementById('toast');
+    const onlineCount = document.getElementById('onlineCount');
+    const visibleCount = document.getElementById('visibleCount');
+    const voiceCount = document.getElementById('voiceCount');
+    const lastUpdated = document.getElementById('lastUpdated');
+    const sidebarStatus = document.getElementById('sidebarStatus');
+    const voteCurrent = document.getElementById('voteCurrent');
+    const voteTarget = document.getElementById('voteTarget');
+    const voteProgressBar = document.getElementById('voteProgressBar');
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.clearTimeout(toast.hideTimeout);
+      toast.hideTimeout = window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function updateTheme(theme) {
+      document.body.classList.toggle('light', theme === 'light');
+      localStorage.setItem('siteTheme', theme);
+    }
+
+    function toggleTheme() {
+      const nextTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+      updateTheme(nextTheme);
+      showToast(`${nextTheme === 'light' ? 'Light' : 'Dark'} theme enabled`);
+    }
+
+    function refreshStats() {
+      const online = 8 + Math.floor(Math.random() * 22);
+      const visible = 120 + Math.floor(Math.random() * 80);
+      const voice = 3 + Math.floor(Math.random() * 7);
+      onlineCount.textContent = online;
+      visibleCount.textContent = visible;
+      voiceCount.textContent = voice;
+      const now = new Date();
+      lastUpdated.textContent = `Last updated: ${now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+      sidebarStatus.textContent = `Live: ${online} online · ${voice} voice channels active`;
+
+      const current = 20 + Math.floor(Math.random() * 12);
+      const target = 50;
+      voteCurrent.textContent = current;
+      voteTarget.textContent = target;
+      voteProgressBar.style.width = `${Math.min(100, Math.round((current / target) * 100))}%`;
+    }
+
+    function bindLinks() {
+      inviteButtons.forEach((button) => {
+        if (button) {
+          button.href = discordInviteUrl;
+        }
+      });
+    }
+
+    copyInviteBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(discordInviteUrl);
+        showToast('Discord invite copied!');
+      } catch (err) {
+        showToast('Could not copy invite.');
+      }
+    });
+
+    copyRealmBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(realmCopyText);
+        showToast('Realm access text copied!');
+      } catch (err) {
+        showToast('Could not copy text.');
+      }
+    });
+
+    refreshBtn.addEventListener('click', () => {
+      refreshStats();
+      showToast('Status refreshed');
+    });
+
+    themeToggle.addEventListener('click', toggleTheme);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('siteTheme');
+      updateTheme(savedTheme === 'light' ? 'light' : 'dark');
+      bindLinks();
+      refreshStats();
+      setInterval(refreshStats, 15000);
+    });
+  </script>
+</body>
+</html>
