@@ -23,7 +23,7 @@ jobs:
           rsync -a --delete --exclude='.git' --exclude='.github' --exclude='public' . public/
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: public
 
